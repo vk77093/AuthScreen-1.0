@@ -1,0 +1,249 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<style>
+    .backclass{ 
+        background-color: burlywood;
+        border:solid 2px gray;
+        box-shadow: 3px 3px red, -1em 0 .4em olive;
+        position: absolute;
+         top: 20%;
+         left: 2%;
+        margin: -20px 0 0 -20px;
+      }  
+      .vl {
+  border-left: 6px solid green;
+  height: 310px;
+  position: absolute;
+  left: 50%;
+  margin-left: -3px;
+  top: 0;
+}
+.imgBox{
+    width: 180px;
+    height: 180px;
+    border: 2px solid black;
+    padding-bottom: 10px;
+}
+
+label{
+  font-weight:bold;
+
+}
+.card{
+    background-color:burlywood;
+}
+.custom-checkbox{
+    padding-left: 350px;
+}
+.form-switch{
+    padding-left:580px;
+    margin-top: -20px;
+}
+.btnRight{
+    padding-left:580px;
+}
+</style>
+@*<div class="row">
+    <div class="col-md-4">
+        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <h2>Create a new account.</h2>
+            <hr />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-floating">
+                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" />
+                <label asp-for="Input.Email"></label>
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" />
+                <label asp-for="Input.Password"></label>
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" />
+                <label asp-for="Input.ConfirmPassword"></label>
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+        </form>
+    </div>
+    <div class="col-md-6 col-md-offset-2">
+        <section>
+            <h3>Use another service to register.</h3>
+            <hr />
+            @{
+                if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                {
+                    <div>
+                        <p>
+                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
+                            about setting up this ASP.NET application to support logging in via external services</a>.
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                        <div>
+                            <p>
+                                @foreach (var provider in Model.ExternalLogins)
+                                {
+                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                }
+                            </p>
+                        </div>
+                    </form>
+                }
+            }
+        </section>
+    </div>
+</div>*@
+<div class="container pos">
+     <div class="row backclass">
+        <div class="text-center">
+            <h3>Register User Or Create/Edit User Profile</h3>
+        </div>
+       <div class="col-md-8 col-sm-8">
+<div class="card pt-2">
+  <div class="card-body  pt-2">
+    <h3 class="card-title text-center">Our Company Logo </h3>
+    <h5 class="card-title text-center pt-2">Login With Your Provided Carendientals</h5>
+    
+    <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+          <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group row">
+          <label asp-for="Input.UserId" class="col-sm-2 control-label">User Code</label>
+          <div class="col-sm-2">
+            <input type="text" asp-for="Input.UserId" class="form-control" id="usercode"/>
+          </div>
+        </div>
+        <div class="form-group row pt-2">
+          <label  asp-for="Input.FirstName" class="col-sm-2 control-label">First Name</label>
+          <div class="col-sm-2">
+            <input type="text"  asp-for="Input.FirstName" class="form-control" id="pass"/>
+          </div>
+          <label asp-for="Input.LastName" class="col-sm-2 control-label">Last Name</label>
+          <div class="col-sm-2">
+            <input type="text" asp-for="Input.LastName" class="form-control" id="pass"/>
+          </div>
+          <label for="pass" class="col-sm-2 control-label">Full Name</label>
+          <div class="col-sm-2">
+            <input type="text" class="form-control" id="pass"/>
+          </div>
+        </div>
+        <div class="form-group">
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" id="customCheck1"  asp:CheckBox ID="Input.AllowMultipleLogin">
+                <label class="custom-control-label"asp:CheckBox ID="Input.AllowMultipleLogin">Allow Login In Multiplex</label>
+              </div>
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked"  asp:CheckBox ID="Input.BlockedOrUnBlocked" checked>
+                <label class="form-check-label" for="flexSwitchCheckChecked" asp:CheckBox ID="Input.BlockedOrUnBlocked">Block Or Unblock User</label>
+              </div>
+        </div>
+        <hr/>
+        <div class="form-group row">
+            <label asp-for="Input.Password" class="col-sm-2 control-label">Login Password</label>
+            <div class="col-sm-2">
+              <input type="password" asp-for="Input.Password" class="form-control" id="pass"/>
+            </div>
+            <label asp-for="Input.ConfirmPassword"  class="col-sm-3 control-label">Confirm Password</label>
+            <div class="col-sm-1">
+              <input type="password" asp-for="Input.ConfirmPassword" class="form-control" id="pass"/>
+            </div>
+            <label asp-for="Input.TrnasctionPassoword" class="col-sm-3 control-label">Transction Password</label>
+            <div class="col-sm-1">
+              <input type="password" asp-for="Input.TrnasctionPassoword" class="form-control" id="pass"/>
+            </div>
+        </div>
+        <hr />
+        <div class="text-center">
+            <h6>User Login Details</h6>
+        </div>
+        <hr />
+        <div class="form-group row">
+            <label asp-for="Input.Email" class="col-sm-2 control-label">Email</label>
+<div class="col-sm-3">
+    <input type="email" class="form-control" id="email" asp-for="Input.Email"/>
+</div>
+<label asp-for="Input.LoginId" class="col-sm-2 control-label">Login Id</label>
+<div class="col-sm-3">
+    <input type="text" class="form-control" id="loginid" asp-for="Input.LoginId"/>
+</div>
+        </div>
+        <div class="form-group row pt-2">
+            <label asp-for="Input.IpAddress" class="col-sm-3 control-label">Map IP Address</label>
+<div class="col-sm-3">
+    <input type="text" asp-for="Input.IpAddress" class="form-control" id="email"/>
+</div>
+<label asp-for="Input.CompName" class="col-sm-3 control-label">Computer Name</label>
+<div class="col-sm-3">
+    <input type="text" class="form-control" id="loginid" asp-for="Input.CompName"/>
+</div>
+        </div>
+        <hr/>
+        <div class="text-center">
+            <h6>User Login Validation</h6>
+        </div>
+        <hr /> 
+        <div class="form-group row">
+            
+                <label asp-for="Input.NoOfDeviceAllowed" class="col-sm-2 control-label">No. Of Device Allowed</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control" asp-for="Input.NoOfDeviceAllowed"/>
+                </div>
+                <label asp-for="Input.NoOfConcurrentLogin" class="col-sm-2 control-label">No. Concurrent Login Allowed</label>
+                <div class="col-sm-2">
+                    <input type="text" class="form-control" asp-for="Input.NoOfConcurrentLogin"/>
+                </div>
+                <label asp-for="Input.LoginType" class="col-sm-2 control-label">Login Type</label>
+                <div class="col-sm-2">
+                   <select class="form-select" asp-for="Input.LoginType">
+                       <option value="dis">Select type</option>
+                       
+                   </select>
+                </div>
+            
+        </div>
+        <div class="form-group row pt-2">
+            <label asp-for="Input.ReportViewType" class="col-sm-3 control-label">Report Viewer</label>
+                <div class="col-sm-3">
+                   <select class="form-select" asp-for="Input.ReportViewType">
+                       <option value="dis">Select type</option>
+                   </select>
+                </div>
+                <label asp-for="Input.MainMenuType" class="col-sm-3 control-label">Main Menu Type</label>
+                <div class="col-sm-3">
+                   <select class="form-select" asp-for="Input.MainMenuType">
+                       <option value="dis">Select type</option>
+                   </select>
+                </div>
+        </div>
+       <div class="float-right clearfix pt-2 btnRight">
+          <button class="btn btn-primary"type="submit" id="registerSubmit">Save</button>
+          <button class="btn btn-danger"type="button">Cancel</button>
+        </div>
+         </form>
+  </div>
+ 
+</div>
+
+       </div>
+       <div class="col sm-4 col-md-4">
+        <div class="card">
+        <div class="text-center card-body">
+            <img src="" class="img-thumbnail imgBox" alt=""/>
+         <input type="file" class="form-control"/>
+        </div>
+        </div>
+   
+        </div>
+     </div>
+     </div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

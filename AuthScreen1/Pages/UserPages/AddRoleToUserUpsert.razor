@@ -1,0 +1,98 @@
+﻿@page "/addroletouser/{roleid}"
+
+<CardComponent CardTitle="Assign User To Role">
+    <CardBody>
+        <EditForm Model="identityUserRole" OnValidSubmit="HandleForm">
+        <h4>@role.Name</h4>
+        <input type="hidden" @bind="identityUserRole.RoleId=roleid" />
+        <hr/>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Select Users</th>
+                    <th>User</th>
+                    <th>Email id</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in userRegisterVMs)
+                {
+                    <tr>
+                        <td>
+                              @*<input class="form-check-input" type="checkbox" @bind="identityUserRole.UserId=item.Id" id="flexCheckChecked">*@
+                               <input type="checkbox" @onchange="eventArgs => { CheckboxClicked(identityUserRole.UserId=item.Id, eventArgs.Value); }" />@item.FirstName<br />
+                        </td>
+                        <td>@item.FirstName @item.LastName</td>
+                        <td>@item.Email</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        </EditForm>
+    </CardBody>
+</CardComponent>
+@*<div class="conatiner">
+    <CardComponent CardTitle="Add User In Role">
+     <CardBody>
+         <EditForm Model="identityUserRole" OnValidSubmit="HandleForm">
+             <input type="text" @bind="identityUserRole.RoleId=roleid" readonly class="form-control"  />
+             <lable>Select the Users</lable>
+             <select class="form-select" @bind="identityUserRole.UserId">
+                 <option value="0">--Select the User</option>
+                 @foreach (var item in userRegisterVMs)
+                 {
+                     <option value="@item.Id">@item.Email</option>
+                 }
+             </select>
+             <button type="submit" class="btn btn-primary">Save Changes</button>
+         </EditForm>
+     </CardBody>
+ </CardComponent>
+</div>*@
+ 
+@code {
+    [Parameter]
+    public string roleid { get; set; }
+    private IdentityRole role=new IdentityRole();
+    private IEnumerable<UserRegisterVM> userRegisterVMs { get; set; }
+     public List<string> userRegisterVMs2 { get; set; } = new List<string>();
+
+    [Inject]
+    private IRoleRepo roleRepo { get; set; }
+    [Inject]
+    private IUserRepo userRepo { get; set; }
+    private IdentityUserRole<string> identityUserRole = new IdentityUserRole<string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        userRegisterVMs = await userRepo.GetAllUsers();
+        role= await roleRepo.findRoleById(roleid);
+
+        // return base.OnInitializedAsync();
+    }
+    private void HandleForm()
+    {
+        userRepo.AddUserToRole(identityUserRole);
+    }
+    public void CheckboxClicked(string userId, object checkedValue)
+    {
+        if ((bool)checkedValue)
+        {
+            if (!userRegisterVMs2.Contains(userId))
+            {
+                userRegisterVMs2.Add(userId);
+            }
+        }
+        else
+        {
+            if (userRegisterVMs2.Contains(userId))
+            {
+                userRegisterVMs2.Remove(userId);
+            }
+        }
+    }
+
+
+
+}

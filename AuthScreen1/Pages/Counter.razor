@@ -1,0 +1,31 @@
+﻿@page "/counter"
+
+<PageTitle>Counter</PageTitle>
+
+<h1>Counter</h1>
+
+<p role="status">Current count: @currentCount</p>
+
+<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>
+
+@foreach(var item in usersData)
+            {
+                <p>@item.Email</p>
+            }
+
+@code {
+    private int currentCount = 0;
+     private IEnumerable<Users_in_Role_ViewModel> usersData { get; set; }
+     [Inject]
+    private IRoleRepo? roleRepo { get; set; }
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+    protected override async Task OnInitializedAsync()
+    {
+       // role =await roleRepo?.findRoleById(roleid);
+        usersData = await roleRepo.GetUserInRoles2("a2bbc0b0-5799-4629-948c-667dba17f8bf");
+
+    }
+}

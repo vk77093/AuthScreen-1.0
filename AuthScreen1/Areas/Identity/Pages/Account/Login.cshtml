@@ -1,0 +1,210 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+}
+<style>
+    
+      .backclass{ 
+        background-color: orangered;
+        border:solid 2px gray;
+        box-shadow: 3px 3px red, -1em 0 .4em olive;
+        position: absolute;
+  top: 20%;
+  left: 10%;
+  margin: -20px 0 0 -20px;
+      }
+      .float-right{
+        padding-left: 10rem;
+      }
+      
+      .vl {
+  border-left: 6px solid green;
+  height: 310px;
+  position: absolute;
+  left: 50%;
+  margin-left: -3px;
+  top: 0;
+}
+.rightPull{
+  margin-top: 1rem;
+  margin-left:550px;
+}
+.backclass2{
+  background-color:black;
+ 
+}
+.checkFont{
+  font:x-large;
+  color:white;
+}
+.float-text{
+  padding-left: 20rem;
+  
+}
+label{
+  font-weight:bold;
+
+}
+    </style>
+<h1>@ViewData["Title"]</h1>
+<div class="row">
+    <div class="col-md-4">
+        <section>
+            <form id="account" method="post">
+                <h2>Use a local account to log in.</h2>
+                <hr />
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-floating">
+                    <input asp-for="Input.LoginId" class="form-control" autocomplete="LoginId" aria-required="true" />
+                    <label asp-for="Input.LoginId" class="form-label"></label>
+                    <span asp-validation-for="Input.LoginId" class="text-danger"></span>
+                </div>
+                <div class="form-floating">
+                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" />
+                    <label asp-for="Input.Password" class="form-label"></label>
+                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                </div>
+                <div>
+                    <div class="checkbox">
+                        <label asp-for="Input.RememberMe" class="form-label">
+                            <input class="form-check-input" asp-for="Input.RememberMe" />
+                            @Html.DisplayNameFor(m => m.Input.RememberMe)
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+                </div>
+                <div>
+                    <p>
+                        <a id="forgot-password" asp-page="./ForgotPassword">Forgot your password?</a>
+                    </p>
+                    <p>
+                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+                    </p>
+                    <p>
+                        <a id="resend-confirmation" asp-page="./ResendEmailConfirmation">Resend email confirmation</a>
+                    </p>
+                </div>
+            </form>
+        </section>
+    </div>
+    <div class="col-md-6 col-md-offset-2">
+        <section>
+            <h3>Use another service to log in.</h3>
+            <hr />
+            @{
+                if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                {
+                    <div>
+                        <p>
+                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
+                            about setting up this ASP.NET application to support logging in via external services</a>.
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                        <div>
+                            <p>
+                                @foreach (var provider in Model.ExternalLogins)
+                                {
+                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                }
+                            </p>
+                        </div>
+                    </form>
+                }
+            }
+        </section>
+    </div>
+</div>
+@*<body id="colorChange">
+   
+   <div class="container pos">
+    <div class="form-check form-switch rightPull">
+      <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked onclick="changeColor()" >
+      <label class="form-check-label" for="flexSwitchCheckChecked">Switch to Dark Mode</label>
+    </div>
+     <div class="row backclass">
+      
+       <div class="col sm-6 col-md-6">
+           
+<h4 class="text-center">Company Logo</h4>
+<div class="card">
+<div class="text-center card-body">
+  <p class="card-title text-center">Their Company Details and other
+    kind of Notification and update
+    status from our side</p>
+</div>
+</div>
+       </div>
+       <div class="vl"></div>
+       <div class="col-md-6 col-sm-6">
+<div class="card pt-2">
+  <div class="card-body pt-2">
+    <h3 class="card-title text-center">Our Company Logo </h3>
+    <h5 class="card-title text-center pt-2">Login With Your Provided Carendientals</h5>
+    
+      <form id="account" method="post">
+           <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group row">
+          <label asp-for="Input.LoginId" class="col-sm-3 control-label">User ID</label>
+          <div class="col-sm-6">
+            <input asp-for="Input.LoginId" class="form-control" autocomplete="LoginId" aria-required="true"/>
+            <span asp-validation-for="Input.LoginId" class="text-danger"></span>
+          </div>
+        </div>
+        <div class="form-group row pt-2">
+          <label asp-for="Input.Password" class="col-sm-3 control-label">Password</label>
+          <div class="col-sm-6">
+            <input asp-for="Input.Password" class="form-control" autocomplete="current-password" aria-required="true"/>
+          </div>
+        </div>
+        <div class="checkbox">
+                        <label asp-for="Input.RememberMe" class="form-label">
+                            <input class="form-check-input" asp-for="Input.RememberMe" />
+                            @Html.DisplayNameFor(m => m.Input.RememberMe)
+                        </label>
+                    </div>
+       <div class="float-right clearfix pt-2">
+          <button class="btn btn-primary"type="submit">Sign in</button>
+          <button class="btn btn-danger"type="button">Forgot Password</button>
+        </div>
+        <div class="text-center pt-3">
+          <a href="#">Login With Other Methods</a>
+
+        </div>
+
+      </form>
+    
+  </div>
+ 
+</div>
+<div class="float-text">
+  <a href="#" class="">Our Helpline Desk</a>
+   
+</div>
+       </div>
+     </div>
+    
+     </div>
+
+   
+    <script>
+     
+      function changeColor(){
+        var bodyId=document.getElementById("colorChange");
+        var formLabelId=document.getElementsByClassName("form-check-label");
+       bodyId.classList.toggle("backclass2");
+       formLabelId[0].classList.toggle("checkFont");
+      }
+      </script>
+  </body>*@
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

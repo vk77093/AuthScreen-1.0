@@ -1,0 +1,99 @@
+﻿@page "/rolecreate"
+
+<CardComponent CardTitle="Create The Role">
+    <CardBody>
+        <EditForm Model="role" OnValidSubmit="HandleForm">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    @if(!String.IsNullOrEmpty(Message)){
+        <p class="alert alert-danger">@Message</p>
+    }
+    <div class="form-group row">
+        <label for="roleName" class="col-sm-2 control-label">Role Name</label>
+        <div class="col-sm-4">
+            <input type="text" class="form-control" @bind-value="role.Name" required  />
+            <ValidationMessage For="(()=>role.Name)"/>
+        </div>
+    </div>
+    <div class="text-center mt-1 float-right">
+        <button type="submit" class="btn btn-primary">Create Role</button>
+    </div>
+
+</EditForm>
+    </CardBody>
+</CardComponent>
+<div class="conatiner pt-3">
+    <CardComponent CardTitle="All the Users Role">
+        <CardBody>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Sr.No.</th>
+                        <th>Role Name</th>
+                        <th>Add User or Edit Role</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (identityRoles.Any())
+                    {
+                        foreach (var item in identityRoles.Select((x,i)=>new {Data=x,Index=i+1}))
+                        {
+                            <tr>
+                                <td>@item.Index</td>
+                                <td>@item.Data.Name</td>
+                                <td>
+                                    <a href="/roleeditassign/@item.Data.Id" class="btn btn-info">Add User Or Edit Role</a>
+                                </td>
+                                <td>
+                                    <button @onclick="@(()=>HandleDelete(item.Data.Id))" class="btn btn-danger">Delete Role</button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <p class="text-center">No Roles Is Currently Added</p>
+                    }
+                </tbody>
+            </table>
+        </CardBody>
+    </CardComponent>
+</div>
+
+@code {
+    private IdentityRole role=new IdentityRole();
+    private string? Message=string.Empty;
+    private IEnumerable<IdentityRole>? identityRoles { get; set; }
+
+    [Inject]
+    private IRoleRepo? roleRepo { get; set; }
+    private async void HandleForm()
+    {
+        roleRepo?.AddRole(role);
+        Message = "Role Got Created";
+        await DisapperMessage();
+        LoadRole();
+    }
+    private async Task DisapperMessage()
+    {
+        await Task.Delay(2000);
+        Message = String.Empty;
+        StateHasChanged();
+    }
+    private void LoadRole(){
+        identityRoles =  roleRepo?.GetAllRoles();
+    }
+    protected override void OnInitialized()
+    {
+        LoadRole();
+    }
+    private async void HandleDelete(string roleId)
+    {
+        roleRepo?.DelteRole(roleId);
+        Message="Role Got Deleted";
+        await  DisapperMessage();
+        LoadRole();
+
+    }
+}

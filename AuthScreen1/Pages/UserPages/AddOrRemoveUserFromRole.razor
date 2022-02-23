@@ -1,0 +1,124 @@
+﻿@page "/adduserorremoveuser/{roleid}"
+
+<EditForm Model="userRoleViewModels" OnValidSubmit="HandleForm">
+    <CardComponent CardTitle="Add or Remove User From This Role">
+    <CardBody>
+       @* @for(int i = 0; i < userRoleVMs.Count(); i++)
+            {
+                <div class="form-check m-1">
+                    <input @bind="userRoleVMs[i].IsSelected" class="form-check-input"/>
+                    <label class="form-check-label">@userRoleVMs[i].UserName</label>
+                </div>
+            }*@
+            @foreach (var item in userRoleVMs)
+            {
+              
+                 <div class="form-check m-1">
+                    <input type="checkbox" @bind="item.IsSelected" class="form-check-input" id="userId"/>
+                    <label class="form-check-label" for="userId">@item.UserName</label>
+                    <input type="hidden" @bind-value="userRoleViewModels.IsSelected"/>
+                    <input type="hidden" @bind-value="userRoleViewModels.UserName"/>
+                </div>
+                
+            }
+        </CardBody>
+    <CardFooter>
+        <div class="btn btn-group">
+            <button type="submit" class="btn btn-primary">Update</button>
+            <button type="button" class="btn btn-danger">Cancel</button>
+        </div>
+    </CardFooter>
+</CardComponent>
+</EditForm>
+
+@code {
+    [Parameter]
+    public string? roleid { get; set; }
+    [Inject]
+    private RoleManager<IdentityRole>? roleManager { get; set; }
+    [Inject]
+    private UserManager<UserRegisterVM>? userManager { get; set; }
+    List<UserRoleVM> userRoleVMs = new List<UserRoleVM>();
+    UserRoleVM userRoleViewModels = new UserRoleVM();
+    [Inject]
+    private NavigationManager Nvm { get; set; }
+
+    public async Task<List<UserRoleVM>> HandleUsersInRole(string id)
+    {
+        roleid = id;
+        var roleGot = await roleManager.FindByIdAsync(id);
+        if(roleGot == null)
+        {
+            return null;
+        }
+        else
+        {
+            // var  userRoleVMs = new List<UserRoleVM>();
+            foreach (var user in userManager.Users)
+            {
+                userRoleViewModels = new UserRoleVM
+                    {
+                        UserId = user.Id,
+                        UserName = user.Email,
+                    };
+                if(await userManager.IsInRoleAsync(user, roleGot.Name))
+                {
+                    userRoleViewModels.IsSelected = true;
+                }
+                else
+                {
+                    userRoleViewModels.IsSelected = false;
+                }
+                userRoleVMs.Add(userRoleViewModels);
+            }
+            return userRoleVMs;
+        }
+    }
+    //protected override async void OnInitialized()
+    //{
+    //     await HandleUsersInRole(roleid);
+    //    }
+    protected override async Task OnInitializedAsync()
+    {
+        await HandleUsersInRole(roleid);
+
+    }
+
+
+    private async void HandleForm()
+    {
+        await AddUserInRoles(userRoleVMs, roleid);
+        Nvm.NavigateTo($"/roleeditassign/{roleid}");
+
+    }
+
+    public async Task<List<UserRoleVM>> AddUserInRoles(List<UserRoleVM> roleVMsHead,string roleidHead)
+    {
+        var roleGot = await roleManager.FindByIdAsync(roleidHead);
+        if (roleGot == null)
+        {
+            return null;
+        }
+        else
+        {
+            for(int i=0;i<roleVMsHead.Count; i++)
+            {
+                var user = await userManager.FindByIdAsync(roleVMsHead[i].UserId);
+                IdentityResult result = null;
+                if(roleVMsHead[i].IsSelected ==true && !(await userManager.IsInRoleAsync(user,roleGot.Name)))
+                {
+                    result = await userManager.AddToRoleAsync(user, roleGot.Name);
+                }
+                else if(roleVMsHead[i].IsSelected==false && await userManager.IsInRoleAsync(user, roleGot.Name))
+                {
+                    result = await userManager.RemoveFromRoleAsync(user, roleGot.Name);
+                }
+                else
+                {
+                    continue;
+                }
+            }
+            return roleVMsHead;
+        }
+    }
+}

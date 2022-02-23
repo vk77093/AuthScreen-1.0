@@ -1,0 +1,120 @@
+﻿@page "/role"
+@page "/role/{Id}"
+@*@implements IDisposable*@
+
+
+<CardComponent CardTitle="Create Roles">
+    <CardBody>
+        <EditForm Model="role" OnValidSubmit="HandleSubmit">
+            <div class="form-group row">
+                <label for="roleName" class="col-sm-3 control-label">Role Name</label>
+                    <div class="col-sm-3">
+                        <input type="text" class="form-control" @bind-value="role.Name" />
+                    </div>
+            </div>
+            <button type="submit" class="btn btn-primary pull-right">@ButtonTitle</button>
+        </EditForm>
+    </CardBody>
+</CardComponent>
+<div class="container mt-2">
+    <CardComponent CardTitle="All The Roles">
+        <CardBody>
+           @* @if(identityRoles.Count() != 0)
+            {*@
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Sr.No.</th>
+                        <th>Role Name</th>
+                        <th>Assign To User</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in identityRoles.Select((x,i)=>new {Data=x,Index=i+1}))
+                        {
+                            <tr>
+                                <td>@item.Index</td>
+                                <td>@item.Data.Name</td>
+                                <td>
+                                    <a href="@($"/addroletouser/{item.Data.Id}")" class="btn btn-info">Assign To User</a>
+                                </td>
+                                <td>
+                                    <button @onclick="@(()=>GoToEdit(item.Data.Id))" class="btn btn-success">Edit</button>
+                                </td>
+                                <td>
+                                    <button @onclick="@(()=>HandleDelete(item.Data.Id))" class="btn btn-danger">Delete</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+           @* }
+            else
+            {
+                <p>No Roles Is Added</p>
+            }*@
+        </CardBody>
+    </CardComponent>
+</div>
+@code {
+    private IdentityRole role = new IdentityRole();
+    [Inject]
+    public IRoleRepo  RoleRepo { get; set; }
+    private IEnumerable<IdentityRole> identityRoles;
+    private string ButtonTitle = "Create Role";
+    [Inject]
+    private NavigationManager? Nvm { get; set; }
+    [Parameter]
+    public string Id { get; set; }
+
+
+    private  void HandleSubmit()
+    {
+        if (ButtonTitle=="Create Role")
+        {
+            RoleRepo.AddRole(role);
+            Nvm.NavigateTo("/role", true);
+        }
+        else if(ButtonTitle =="Update Role" && role.Id !=null)
+        {
+            RoleRepo.UpdateRole(role);
+            Nvm.NavigateTo("/role", true);
+        }
+
+
+    }
+    private void LoadRole()
+    {
+        identityRoles = RoleRepo.GetAllRoles();
+    }
+
+    //protected override async Task OnInitializedAsync()
+    //{
+    //     identityRoles =await RoleRepo.GetAllRoles();
+    //   // return base.OnInitializedAsync();
+
+    //}
+    protected override void OnInitialized()
+    {
+        LoadRole();
+    }
+    private async Task<IdentityRole> GoToEdit(string roleId)
+    {
+        Nvm.NavigateTo($"/role/{roleId}");
+        ButtonTitle = "Update Role";
+        role =await RoleRepo.findRoleById(roleId);
+        return role;
+
+    }
+    private void HandleDelete(string roleId)
+    {
+        RoleRepo.DelteRole(roleId);
+         Nvm.NavigateTo("/role", true);
+        StateHasChanged();
+       // LoadRole();
+    }
+    
+   
+}

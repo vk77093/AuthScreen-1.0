@@ -1,0 +1,98 @@
+﻿@page "/datagrid"
+
+<DataGridComponent TItem="Employee" @ref="grid"
+DataItems="ListEmployees" Columns="columnDefinations"
+Paging="@(new PagingConfiguration{
+Enabled=true,CustomPager=true,PageSize=@pageLoadNumber
+})"
+>
+<CustomePagerShow>
+   Load Number Of Rows : <input type="number" @bind-value="pageLoadNumber" />
+      <li class="page-item">
+      <button type="button" class="btn btn-success btn-sm" @onclick="GoToPreviousPage">Previous</button>
+    </li>
+   @* <span>&nbsp; &nbsp;Page  @CurrentPageNo OF @Paging.MaxPageNumber(DataItems.Count) &nbsp;&nbsp;</span>*@
+   <span>&nbsp; &nbsp;Page @grid.CurrentPageNo : <input type="number" max="@grid.NaximumNumber" min="1"
+   @bind-value="grid.CurrentPageNo"/> OF @grid.NaximumNumber
+   </span>
+    <li class="page-item">
+      <button type="button" class="btn btn-info btn-sm" @onclick="GoToNextPage">Next</button>
+    </li>
+</CustomePagerShow>
+</DataGridComponent>
+
+@code {
+    private List<Employee> ListEmployees { get; set; }
+    private List<ColumnDefination> columnDefinations;
+
+    private void LoadColoumnDefination()
+    {
+        if(columnDefinations == null)
+        {
+            columnDefinations = new List<ColumnDefination>();
+            columnDefinations.AddRange(new ColumnDefination[]
+                    {
+                    new ColumnDefination{DataFiled="Name",Caption="Name",SortDirection=SortDirection.ASC},
+                    new ColumnDefination {DataFiled="Title",Caption="Title"},
+                    new ColumnDefination{DataFiled="EmployementDate",Caption="Employement Date"},
+                    new ColumnDefination {DataFiled="Department",Caption="Department"},
+                    new ColumnDefination {DataFiled="Salary",Caption="Net Salary",Aligment=Aligment.Right,Format="C",DataType=DataType.Number }
+    });
+        }
+    }
+    private void LoadEmployee()
+    {
+        if (ListEmployees == null)
+        {
+            ListEmployees = new List<Employee>();
+            ListEmployees.AddRange(new Employee[]
+                {
+new Employee{Name="Vijay",Title="Mr.",Department="Coder",EmployementDate=DateTime.Now,Salary=20000},
+new Employee{Name="Ajit",Title="Mr.",Department="Subinchart",EmployementDate=DateTime.Now,Salary=20900},
+new Employee{Name="Navdeep",Title="Mr.",Department="Consulatnat",EmployementDate=DateTime.Now,Salary=20800},
+new Employee{Name="JHonty",Title="Mr.",Department="Markerter",EmployementDate=DateTime.Now,Salary=27000},
+new Employee{Name="Rahul",Title="Mr.",Department="Operation",EmployementDate=DateTime.Now,Salary=26000},
+new Employee{Name="Krishna",Title="Mr.",Department="IT",EmployementDate=DateTime.Now,Salary=25000},
+new Employee{Name="Shelly",Title="Mr.",Department="Techician",EmployementDate=DateTime.Now,Salary=23000},
+new Employee{Name="Ravi",Title="Mr.",Department="Dispatcher",EmployementDate=DateTime.Now,Salary=20200},
+new Employee{Name="Vasnh",Title="Mr.",Department="Accountant",EmployementDate=DateTime.Now,Salary=21000},
+new Employee{Name="Vijay",Title="Mr.",Department="Coder",EmployementDate=DateTime.Now,Salary=20000},
+new Employee{Name="Ajit",Title="Mr.",Department="Subinchart",EmployementDate=DateTime.Now,Salary=20900},
+new Employee{Name="Navdeep",Title="Mr.",Department="Consulatnat",EmployementDate=DateTime.Now,Salary=20800},
+new Employee{Name="JHonty",Title="Mr.",Department="Markerter",EmployementDate=DateTime.Now,Salary=27000},
+new Employee{Name="Rahul",Title="Mr.",Department="Operation",EmployementDate=DateTime.Now,Salary=26000},
+new Employee{Name="Krishna",Title="Mr.",Department="IT",EmployementDate=DateTime.Now,Salary=25000},
+new Employee{Name="Shelly",Title="Mr.",Department="Techician",EmployementDate=DateTime.Now,Salary=23000},
+new Employee{Name="Ravi",Title="Mr.",Department="Dispatcher",EmployementDate=DateTime.Now,Salary=20200},
+new Employee{Name="Vasnh",Title="Mr.",Department="Accountant",EmployementDate=DateTime.Now,Salary=21000},
+new Employee{Name="Vijay",Title="Mr.",Department="Coder",EmployementDate=DateTime.Now,Salary=20000},
+new Employee{Name="Ajit",Title="Mr.",Department="Subinchart",EmployementDate=DateTime.Now,Salary=20900},
+new Employee{Name="Navdeep",Title="Mr.",Department="Consulatnat",EmployementDate=DateTime.Now,Salary=20800},
+new Employee{Name="JHonty",Title="Mr.",Department="Markerter",EmployementDate=DateTime.Now,Salary=27000},
+new Employee{Name="Rahul",Title="Mr.",Department="Operation",EmployementDate=DateTime.Now,Salary=26000},
+new Employee{Name="Krishna",Title="Mr.",Department="IT",EmployementDate=DateTime.Now,Salary=25000},
+new Employee{Name="Shelly",Title="Mr.",Department="Techician",EmployementDate=DateTime.Now,Salary=23000},
+new Employee{Name="Ravi",Title="Mr.",Department="Dispatcher",EmployementDate=DateTime.Now,Salary=20200},
+new Employee{Name="Vasnh",Title="Mr.",Department="Accountant",EmployementDate=DateTime.Now,Salary=21000},
+                });
+        }
+
+    }
+    protected override void OnInitialized()
+    {
+        LoadColoumnDefination();
+        LoadEmployee();
+        base.OnInitialized();
+    }
+    public DataGridComponent<Employee> grid { get; set; }
+    public void GoToPreviousPage()
+    {
+       
+        grid.GoToPreviousPage();
+    }
+    public void GoToNextPage()
+    {
+        grid.GoToNextPage();
+    }
+    private int pageLoadNumber { get; set; } = 6;
+}

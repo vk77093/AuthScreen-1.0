@@ -1,0 +1,83 @@
+﻿@page "/"
+
+<PageTitle>Index</PageTitle>
+
+ <!-- Header -->
+    <header>
+        <h3 class="ms-fontSize-42 ms-fontWeight-regular">Welcome to Blazor Calendar</h3>
+        <p class="ms-fontSize-14 ms-fontWeight-regular">Blaozr Calendar allows you to manage all you events within your
+            Outlook Calendar</p>
+
+        <!-- NotAuthenticated Users-->
+        <AuthorizeView>
+            <NotAuthorized>
+                   <p class="ms-fontSize-14 ms-fontWeight-regular">Please Sign in with your Micorosft Account to get started</p>
+                   @* <a href="authentication/login" class="microsoft-login-button shadow-effect"><img src="assets/images/microsoft.png" alt=""> Sign in
+                        with Microsoft</a>*@
+            </NotAuthorized>
+        </AuthorizeView>
+</header>
+ <div class="row">
+
+        <!-- Calendar -->
+        <div class="col-sm-12 col-md-12 col-lg-9">
+            <Calender>
+                <DayTemplate Context="LetsDays">
+                    @{
+                    string currentDayClass = LetsDays.Date == DateTime.Now.Date ? "current-day" : " ";
+                     string selectedDayClass = LetsDays == selectedDay ? "selected-day" : " ";
+                }
+                @if (!LetsDays.IsEmpty)
+                {
+                    <div class="day shadow-effect @currentDayClass @selectedDayClass" @onclick="() => selectedDay = LetsDays">
+                        <h3 class="ms-fontSize-24 ms-fontWeight-regular">@LetsDays.DayNumber</h3>
+                        @if(LetsDays.Events !=null && LetsDays.Events.Count !=0){
+                            var FirstEvent = LetsDays.Events.FirstOrDefault();
+                            <div class="day-event @FirstEvent.Color">
+                                @if(@FirstEvent.Subject.Length > 25)
+                                {
+                                    @FirstEvent.Subject.Substring(0, 25);<text>...</text>
+                                }
+                                else
+                                {
+                                    @FirstEvent.Subject
+                                }
+
+                            </div>
+                        }
+                    </div>
+                }
+                </DayTemplate>
+            </Calender>
+            </div>
+            <!-- Day Menu -->
+        <div class="col-sm-12 col-md-12 col-lg-3">
+            <AddEventComp SelectedDay="@selectedDay" />
+            <EventList SelectedDay="@selectedDay"/>
+ 
+        </div>
+            </div>
+@code{
+    private CalenderDay selectedDay = new  CalenderDay
+    {
+        Date = DateTime.Now,
+    };
+
+    
+    //protected override void OnInitialized()
+    //{
+    //   // this.InvokeAsync(() => this.StateHasChanged());
+    //    //C += A is equivalent to C = C + A
+    //    AddEventComp.OnEventAdded += () =>
+    //    {
+    //        StateHasChanged();
+    //    };
+    //}
+    public void Dispose()
+    {
+           AddEventComp.OnEventAdded -= () =>
+        {
+            StateHasChanged();
+        };
+    }
+}

@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthScreen1", "AuthScreen1\AuthScreen1.csproj", "{7A72C7B9-07E5-4F67-BD05-B3453C5113E5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthScreen.Models", "AuthScreen.Models\AuthScreen.Models.csproj", "{F797E52E-EC65-4FDB-9DC6-5EA089E66D3A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalenderProject", "CalenderProject\CalenderProject.csproj", "{FC902D99-7273-4F06-9C25-8E1CDFEA31A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JsonWebToken", "JsonWebToken\JsonWebToken.csproj", "{3608060A-9429-4AA6-B543-70619DE7C559}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7A72C7B9-07E5-4F67-BD05-B3453C5113E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A72C7B9-07E5-4F67-BD05-B3453C5113E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A72C7B9-07E5-4F67-BD05-B3453C5113E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A72C7B9-07E5-4F67-BD05-B3453C5113E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F797E52E-EC65-4FDB-9DC6-5EA089E66D3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F797E52E-EC65-4FDB-9DC6-5EA089E66D3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F797E52E-EC65-4FDB-9DC6-5EA089E66D3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F797E52E-EC65-4FDB-9DC6-5EA089E66D3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC902D99-7273-4F06-9C25-8E1CDFEA31A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC902D99-7273-4F06-9C25-8E1CDFEA31A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC902D99-7273-4F06-9C25-8E1CDFEA31A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC902D99-7273-4F06-9C25-8E1CDFEA31A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3608060A-9429-4AA6-B543-70619DE7C559}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3608060A-9429-4AA6-B543-70619DE7C559}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3608060A-9429-4AA6-B543-70619DE7C559}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3608060A-9429-4AA6-B543-70619DE7C559}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {14BAF86B-B590-4AC3-ABE0-16C745305642}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,12 @@
+﻿@page "/loadalert"
+
+<button type="button" @onclick="LoadSimpleAlert">Load Simple Alert</button>
+
+@code {
+    [Inject]
+    public IJSRuntime Js { get; set; }
+    private async void LoadSimpleAlert()
+    {
+        await Js.InvokeVoidAsync("alert");
+    }
+}

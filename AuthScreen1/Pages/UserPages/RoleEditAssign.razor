@@ -1,0 +1,134 @@
+﻿@page "/roleeditassign/{roleid}"
+
+<CardComponent CardTitle="Create The Role">
+    <CardBody>
+        <EditForm Model="role" OnValidSubmit="HandleForm">
+    <DataAnnotationsValidator/>
+    <ValidationSummary/>
+    @if(!String.IsNullOrEmpty(Message)){
+        <p class="alert alert-danger">@Message</p>
+    }
+    <div class="form-group row">
+        <label for="roleName" class="col-sm-2 control-label">Role Name</label>
+        <div class="col-sm-4">
+            <input type="text" class="form-control" @bind-value="role.Name" required  />
+            <ValidationMessage For="(()=>role.Name)"/>
+        </div>
+    </div>
+    <div class="text-center mt-1 float-right">
+        <button type="submit" class="btn btn-primary">Update Role</button>
+    </div>
+
+</EditForm>
+    </CardBody>
+</CardComponent>
+<div class="container mt-2">
+    <CardComponent CardTitle="Users In These Below Role">
+        <CardBody>
+            @if(usersData.Any())
+            {
+                @foreach(var item in usersData)
+            {
+                    <p>@item.Email</p>
+                }
+
+            }
+            else
+            {
+                <h4 class="text-center">No users In That Particular Role --@role.Name</h4>
+            }
+
+            
+        </CardBody>
+        <CardFooter>
+             <button @onclick="@(()=>GoToAddUserOrRemoveUser(role.Id))" class="btn btn-primary btn-lg">Add Or Remove Users</button>
+        </CardFooter>
+    </CardComponent>
+</div>
+
+@code {
+    [Parameter]
+    public string? roleid { get; set; }
+
+    private IdentityRole role = new IdentityRole();
+    [Inject]
+    private IRoleRepo? roleRepo { get; set; }
+
+    private string? Message=string.Empty;
+    [Inject]
+    private UserManager<UserRegisterVM>? userManager { get; set; }
+    [Inject]
+    private RoleManager<IdentityRole>? roleManager { get; set; }
+    private List<UserRegisterVM> userRegisterVMs = new List<UserRegisterVM>();
+    List<UserEditVM> userRoleVMs  = new List<UserEditVM>();
+    UserEditVM userRoleViewModels = new UserEditVM();
+
+    private IEnumerable<Users_in_Role_ViewModel> usersData { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        role =await roleRepo?.findRoleById(roleid);
+        //  usersData = await roleRepo.GetUserInRoles2();
+
+    }
+    protected override async void OnInitialized()
+    {
+        usersData = await roleRepo?.GetUserInRoles2(roleid);
+    }
+    private async void HandleForm()
+    {
+        roleRepo?.UpdateRole(role);
+        Message = "Role Got Updated";
+        await  DisapperMessage();
+
+    }
+    private async Task DisapperMessage()
+    {
+        await Task.Delay(2000);
+        Message = String.Empty;
+        StateHasChanged();
+    }
+    [Inject]
+    public NavigationManager Nvm { get; set; }
+    private void GoToAddUserOrRemoveUser(string roleid)
+    {
+        Nvm.NavigateTo($"/adduserorremoveuser/{roleid}");
+    }
+    //private async Task<UserEditVM> HandleUserInRole(string id)
+    //{
+    //    roleid = id;
+    //    var roleGot = await roleManager.FindByIdAsync(id);
+    //    if(roleGot == null)
+    //    {
+    //        return null;
+    //    }
+    //    else
+    //    {
+    //        // var  userRoleVMs = new List<UserRoleVM>();
+    //        foreach (var user in userManager.Users)
+    //        {
+    //            userRoleViewModels = new UserEditVM
+    //                {
+    //                    Id=roleGot.Id,
+    //                    RoleName=roleGot.Name
+
+    //                };
+    //            foreach (var userGot in userManager.Users)
+    //            {
+    //                if(await userManager.IsInRoleAsync(userGot, roleGot.Name))
+    //                {
+    //                    userRoleViewModels.Users.Add(userGot.UserName);
+    //                }
+    //                } 
+    //               return userRoleViewModels; 
+    //        }
+    //         return userRoleViewModels; 
+
+    //    }
+
+
+    //}
+   
+   
+}

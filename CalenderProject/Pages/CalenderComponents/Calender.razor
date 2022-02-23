@@ -1,0 +1,138 @@
+﻿
+<!---Calender-->
+<div class="calendar">
+    <div class="row">
+      
+            <div class="col-sm-12 col-lg-2">
+                <select name="" id="" class="fluent-input" @onchange="SelectYear">
+                   <option>@year</option>
+                   @for(int yearStart = 2020; yearStart < 2025; yearStart++)
+                    {
+                        <option>@yearStart</option>
+                    }
+                </select>
+            </div>
+             <div class="col-sm-12 col-lg-2">
+                   
+                        <select name="" id="" class="fluent-input" @onchange="SelectMonth">
+                            
+                            <option value="1">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6">June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">Sepetemper</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+                    </div>
+     
+        <table class="calendar-table">
+            <thead>
+                <tr>
+                       <td>Sun</td>
+                        <td>Mon</td>
+                        <td>Tue</td>
+                        <td>Wed</td>
+                        <td>Thu</td>  
+                        <td>Fri</td>
+                        <td>Sat</td>
+
+                </tr>
+            </thead>
+            <tbody>
+                @for(int r=0;r< RowCount; r++)
+                {
+                    <tr>
+                        @foreach (var item in days.Skip(r*7).Take(7))
+                        {
+                            <td>@DayTemplate(item)</td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public RenderFragment<CalenderDay> DayTemplate { get; set; }
+    private int year = 2025;
+    private int month = 04;
+    private List<CalenderDay> days = new List<CalenderDay>();
+    private int RowCount = 0;
+
+    private void SelectYear(ChangeEventArgs e)
+    {
+        year = Convert.ToInt32(e.Value?.ToString());
+        UpdateCalender();
+    }
+    private void SelectMonth(ChangeEventArgs e)
+    {
+        month = Convert.ToInt32(e.Value?.ToString());
+        UpdateCalender();
+    }
+    private void UpdateCalender()
+    {
+        days = new List<CalenderDay>();
+        //Calculating the No. of Empty Days
+        var FirstDayOfDate = new DateTime(year, month, 1);
+        int WeekDayNumber = (int)FirstDayOfDate.DayOfWeek;
+        int NumberOfEmptyDays = 0;
+        if (WeekDayNumber == 7) //sunday
+        {
+            NumberOfEmptyDays = 0;
+        }
+        else
+        {
+            NumberOfEmptyDays = WeekDayNumber;
+        }
+        //Adding the Empty days in Calender
+        for(int i = 0; i < NumberOfEmptyDays; i++)
+        {
+            days.Add(new CalenderDay
+                {
+                    DayNumber = 0,
+                    IsEmpty = true,
+
+                });
+        }
+        //Adding the Month Days
+        int NumberOfDaysInMonth = DateTime.DaysInMonth(year, month);
+        for(int i = 0; i < NumberOfDaysInMonth; i++)
+        {
+            days.Add(new CalenderDay
+                {
+                    DayNumber = i + 1,
+                    IsEmpty = false,
+                     Date = new DateTime(year, month, i + 1),
+                Events = new List<CalenderEvent>()
+        });
+        }
+        // Calculate The No. of Rows
+        int RemainingDays = days.Count % 7;
+        if(RemainingDays == 0)
+        {
+            RowCount = days.Count / 7;
+
+        }
+        else
+        {
+            RowCount =Convert.ToInt32( days.Count / 7) + 1;
+            Console.WriteLine($"Total Rows {RowCount} | No of empty Days {NumberOfEmptyDays} | MonthDays {NumberOfDaysInMonth} ");
+        }
+    }
+    protected override void OnInitialized()
+    {
+        var currentYear = DateTime.Now.Year;
+        var currentMoont = DateTime.Now.Month;
+        year = Convert.ToInt32(currentYear);
+        month = Convert.ToInt32(currentMoont);
+        UpdateCalender();
+    }
+
+}

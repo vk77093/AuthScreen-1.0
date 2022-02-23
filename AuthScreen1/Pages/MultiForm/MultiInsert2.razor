@@ -1,0 +1,70 @@
+﻿@page "/multi2"
+<div class="container">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>User Name</th>
+                <th>City Name</th>
+                <th>State Name</th>
+                <th>Pin Code</th>
+                <th>Remove</th>
+            </tr>
+        </thead>
+        <tbody>
+
+            <button type="button" @onclick="AddTodo">Add Field</button>
+            @for (int i = 0; i < nameTables.Count(); i++)
+            {
+               int index = i;
+                <tr>
+
+                    <td>
+                        <input type="text" value="@nameTables[i].UserName" />
+                    </td>
+                    <td>
+                        <input type="text" value="@nameTables[i].City" />
+                    </td>
+                    <td>
+                        <input type="text" value="@nameTables[i].State" />
+                    </td>
+                    <td>
+                        <input type="text" value="@nameTables[i].Pincode" />
+                    </td>
+                    <td>
+                       @* @{ int index = i;}*@
+                        <button type="button" @onclick="() => RemoveValue(index)" class="btn btn-outline-danger">Remove</button>
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+@code {
+    private List<NameTable> nameTables = new List<NameTable>();
+    [Inject]
+    private IMultiTest? multiTestRepo { get; set; }
+    [Inject]
+    private NavigationManager Nvm { get; set; }
+    private NameTable? newTodo=new NameTable();
+    private void HandleForm()
+    {
+        multiTestRepo?.AddAllTableValue(nameTables);
+
+    }
+     private void AddTodo()
+    {
+            nameTables.Add(new NameTable
+                {
+                    UserName = newTodo.UserName,
+                    City = newTodo.City,
+                    State=newTodo.State,
+                    Pincode=newTodo.Pincode
+                });
+            newTodo = new NameTable();
+       
+    }
+    private void RemoveValue(int i) => nameTables.RemoveAt(i);
+}

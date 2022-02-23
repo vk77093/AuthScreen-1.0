@@ -1,0 +1,81 @@
+﻿@page "/addpage2"
+
+<div class="container border">
+    <h3>Users</h3>
+    <hr />
+     
+    <button @onclick="AddValue" class="btn btn-primary">Add Field</button>
+  <EditForm Model="nameTables" OnValidSubmit="HandleSubmit" >
+@for (int i = 0; i < nameTables.Count(); i++)
+    {
+        int index = i;
+        <div>
+            <label for="name">User Name</label>
+            <input type="text" @onchange="((e)=>UpdateValue(index,e.Value.ToString()))" value="@nameTables[i].UserName" />
+            <label for="name">City Name</label>
+            <input type="text" @onchange="((e)=>UpdateValue2(index,e.Value.ToString()))" value="@nameTables[i].City" />
+           @* <input type="text" @onchange="(e) => UpdateValue(index, e.Value.ToString())" value="@values[i]" />*@
+           
+            <button type="button" @onclick="() => RemoveValue(index)" class="btn btn-outline-danger">Remove</button>
+        </div>
+    }
+    <hr />
+    <div>
+        <button type="submit" class="btn btn-success">Submit</button>
+    </div>
+    </EditForm>
+    
+    <hr />
+    @for (int j = 0; j < nameTables.Count; j++)
+    {
+        <p>@nameTables[j].UserName and @nameTables[j].City</p>
+    }
+  
+   
+</div>
+@code {
+    private List<NameTable> nameTables = new List<NameTable>();
+    private NameTable name = new NameTable();
+    [Inject]
+    private IMultiTest? multiTestRepo { get; set; }
+
+    //  private List<string> values = new List<string>();
+    //private void AddValue() => nameTables.Add(name=new NameTable
+    //{
+    //    UserName="",
+    //    City="",
+
+    //});
+    private void AddValue()
+    {
+        nameTables.Add(new NameTable
+                {
+                    UserName = name.UserName,
+                    City = name.City,
+                });
+        name = new NameTable(); 
+    }
+    private void UpdateValue(int i, string data) => nameTables[i].UserName=data;
+     private void UpdateValue2(int i, string data) => nameTables[i].City=data;
+    
+
+    private void RemoveValue(int i) => nameTables.RemoveAt(i);
+    [Inject]
+    private NavigationManager? Nvm { get; set; }
+    // private List<string> values = new List<string>();
+
+    // private void AddValue() => values.Add("");
+    // private void UpdateValue(int i, string value) => values[i] = value;
+    //private void RemoveValue(int i) => values.RemoveAt(i);
+    private void HandleSubmit()
+    {
+        //Access and validate the values list here
+        //       for(int i=0;i < nameTables.Count(); i++)
+        //       {
+        //multiTestRepo?.AddAllTableValue(nameTables);
+
+        //       }
+        multiTestRepo?.AddAllTableValue(nameTables);
+        Nvm.NavigateTo("/");
+    }
+}

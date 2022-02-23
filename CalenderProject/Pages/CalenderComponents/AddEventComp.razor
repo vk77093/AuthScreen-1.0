@@ -1,0 +1,54 @@
+﻿
+<!-- Add Event -->
+<div class="ms-depth-16 card">
+    <EditForm Model="model" OnValidSubmit="AddEventToSelectedYear">
+        <div class="calendar-toolbar">
+            <button class="toolbar-button" type="submit"><i class="ms-Icon ms-Icon--AddEvent"></i></button>
+        </div>
+
+        <div class="card-content">
+            <h3 class="ms-fontSize-24 ms-fontWeight-regular">@SelectedDay!.Date.ToLongDateString()</h3>
+            <input type="text" @bind-value="model.Subject" class="fluent-input" placeholder="Event Subject">
+            <input type="time" @bind-value="model.StartDate" class="fluent-input" placeholder="Event Subject">
+            <input type="time" @bind-value="model.EndDate" class="fluent-input" placeholder="Event Subject">
+        </div>
+    </EditForm>
+</div>
+@code {
+    [Parameter]
+    public CalenderDay? SelectedDay { get; set; }
+    public CalenderEvent model { get; set; } = new CalenderEvent();
+    private async void AddEventToSelectedYear()
+    {
+        model.StartDate = new DateTime(SelectedDay!.Date.Year,
+                                        SelectedDay.Date.Month,
+                                        SelectedDay.Date.Day,
+                                        model.StartDate.Hour,
+                                        model.StartDate.Minute,
+                                        0);
+
+        model.EndDate = new DateTime(SelectedDay.Date.Year,
+                                        SelectedDay.Date.Month,
+                                        SelectedDay.Date.Day,
+                                        model.EndDate.Hour,
+                                        model.EndDate.Minute,
+                                        0);
+        if (SelectedDay.Events == null)
+            SelectedDay.Events = new List<CalenderEvent>();
+
+        //SelectedDay.Events.Add(model);
+        SelectedDay.Events.Add(new CalenderEvent
+            {
+                Subject=model.Subject,
+                StartDate=model.StartDate,
+                EndDate=model.EndDate,
+            });
+
+        Console.WriteLine($"Total Events in Day {SelectedDay.Events.Count} | {model.Subject} | {model.StartDate} | {model.EndDate}");
+        model.Subject = string.Empty;
+       OnEventAdded.Invoke();
+        //this.InvokeAsync(() => this.StateHasChanged());
+    }
+    public static  event Action OnEventAdded = () => { };
+  
+}

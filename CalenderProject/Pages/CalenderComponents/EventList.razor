@@ -1,0 +1,49 @@
+﻿<div class="ms-depth-16 card">
+    <div class="card-content">
+        <h3 class="ms-fontSize-22 ms-fontWeight-regular">@SelectedDay.Date.ToLongDateString()</h3>
+        @{
+            if(SelectedDay.Events==null || SelectedDay.Events.Count == 0)
+            {
+                <h3 class="ms-fontSize-16 ms-fontWeigth-regular">No Events In That Date</h3>
+            }else{
+                foreach (var item in SelectedDay.Events)
+                {
+                    string ColorClass = item.Color;
+                    <div class="event shadow-effect @ColorClass">
+                        <h3 class="ms-fontSize-14 ms-fontWeight-regular">@item.StartDate.ToString("HH:mm") to @item.EndDate.ToString("HH:mm")</h3>
+                        <p class="ms-fontSize-11 ms-fontWeight-regular">@item.Subject</p>
+                    </div>
+                }
+            }
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public CalenderDay SelectedDay { get; set; }
+    //protected override void OnInitialized()
+    //{
+    //    AddEventComp.OnEventAdded += () =>
+    //    {
+    //        StateHasChanged();
+    //    };
+    //    //this.InvokeAsync(() => this.StateHasChanged());
+    //}
+    //protected override async Task OnInitializedAsync()
+    //{
+
+    //    AddEventComp.OnEventAdded += async () =>
+    //    {
+    //         StateHasChanged();
+    //    };
+    //}
+    public void Dispose()
+    {
+           AddEventComp.OnEventAdded -= () =>
+        {
+            StateHasChanged();
+        };
+    }
+    
+}

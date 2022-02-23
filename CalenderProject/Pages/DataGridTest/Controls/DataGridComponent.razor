@@ -1,0 +1,150 @@
+﻿@typeparam TItem
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            @if(Columns ==null ||Columns.Count <= 0)
+            {
+                //create Header
+            }
+            else
+            {
+                @foreach (var col in Columns)
+                {
+                 <th @onclick="@(()=>SortData(col))">
+                   <span style="float:right" class="@(SortClass(col))"></span>  
+                     @col.Caption</th>   
+                }
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in DataItems.Skip(Paging.NumberOfItemsToSkip(CurrentPageNo))
+        .Take(Paging.NumberOfItemsToTake(DataItems.Count)))
+        {
+            <tr>
+                @foreach (var col in Columns) 
+                
+                {
+                    if(col.Aligment != Aligment.NotSet)
+                    {
+                        <td align="@col.Aligment.ToString().ToLower()">@typeof(TItem).GetProperty(col.DataFiled).GetValue(item)</td>
+                    }
+                    else
+                    {
+                        <td>@typeof(TItem).GetProperty(col.DataFiled).GetValue(item)</td>
+                    }
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-end">
+        @if(Paging !=null && Paging.Enabled)
+        {
+            @if (Paging.CustomPager)
+            {
+                @CustomePagerShow
+
+            }
+            else
+            {
+                <li class="page-item">
+      <button type="button" class="btn btn-success btn-sm" @onclick="GoToPreviousPage">Previous</button>
+    </li>
+   @* <li class="page-item"><a class="page-link" href="#">1</a></li>
+    <li class="page-item"><a class="page-link" href="#">2</a></li>
+    <li class="page-item"><a class="page-link" href="#">3</a></li>*@
+    <span>&nbsp; &nbsp;Page  @CurrentPageNo OF @Paging.MaxPageNumber(DataItems.Count) &nbsp;&nbsp;</span>
+    <li class="page-item">
+      <button type="button" class="btn btn-info btn-sm" @onclick="GoToNextPage">Next</button>
+    </li>
+            }
+        }
+    </ul>
+</nav>
+@code {
+    [Parameter]
+    public List<TItem> DataItems { get; set; }
+    [Parameter]
+    public List<ColumnDefination> Columns { get; set; }
+
+    //For Paging
+    [Parameter]
+    public PagingConfiguration Paging { get; set; }
+    [Parameter]
+    public int CurrentPageNo { get; set; } = 1;
+    [Parameter]
+    public RenderFragment CustomePagerShow { get; set; } 
+    public int NaximumNumber { get=>Paging.MaxPageNumber(DataItems.Count);  }
+
+    public void GoToPreviousPage()
+    {
+        CurrentPageNo = Paging.PreviousPageNumber(CurrentPageNo);
+    }
+    public void GoToNextPage()
+    {
+        CurrentPageNo = Paging.NextPageNumber(CurrentPageNo, DataItems.Count);
+    }
+
+    //for sorting
+    public string SortClass(ColumnDefination column)
+    {
+        if(column.SortDirection != SortDirection.NotSet)
+        {
+            return $"sort {column.SortDirection.ToString().ToLower()}";
+        }
+        else
+        {
+            return "no-sort";
+        }
+    }
+    public void SortData(ColumnDefination SortByCol=null)
+    {
+        if (SortByCol == null)
+        {
+            SortByCol = Columns.FirstOrDefault(x => x.SortDirection != SortDirection.NotSet);
+            if (SortByCol == null) return;
+        }
+
+        foreach (var col in Columns)
+        {
+            if (col.DataFiled != SortByCol.DataFiled) col.SortDirection = SortDirection.NotSet;
+        }
+        //for Pre InTializre
+        bool IntialLoad = (SortByCol == null);
+        if(!IntialLoad)
+            switch (SortByCol.SortDirection)
+            {
+                case SortDirection.NotSet:
+                    SortByCol.SortDirection = SortDirection.ASC;
+                    break;
+                case SortDirection.ASC:
+                    SortByCol.SortDirection = SortDirection.DESC;
+                    break;
+                case SortDirection.DESC:
+                    SortByCol.SortDirection=SortDirection.ASC;
+                    break;
+                default:
+                    SortByCol.SortDirection=SortDirection.ASC;
+                    break;
+
+            }
+        if(SortByCol.SortDirection == SortDirection.ASC)
+        {
+            DataItems.Sort((x, y) => typeof(TItem).GetProperty(SortByCol.DataFiled).GetValue(x).ToString()
+            .CompareTo(typeof(TItem).GetProperty(SortByCol.DataFiled).GetValue(y).ToString()));
+        }
+        else
+        {
+            DataItems.Sort((x, y) => typeof(TItem).GetProperty(SortByCol.DataFiled).GetValue(y).ToString()
+            .CompareTo(typeof(TItem).GetProperty(SortByCol.DataFiled).GetValue(x).ToString()));
+        }
+    }
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        SortData();
+    }
+}

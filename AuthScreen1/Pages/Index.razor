@@ -1,0 +1,25 @@
+﻿@page "/"
+@attribute [Authorize(Roles ="Tester")]
+
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new app.
+
+@foreach(var item in userRegisterVMs)
+{
+    <p>@item.Email</p>
+}
+
+<SurveyPrompt Title="How is Blazor working for you?" />
+@code{
+    [Inject]
+    private IUserRepo userRepo { get; set; }
+    private IEnumerable<UserRegisterVM> userRegisterVMs { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        userRegisterVMs = await userRepo.GetAllUsers();
+    }
+}

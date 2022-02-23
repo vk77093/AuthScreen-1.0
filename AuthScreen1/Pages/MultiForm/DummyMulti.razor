@@ -1,0 +1,86 @@
+﻿@page "/dummymulti"
+
+<div class="conatiner">
+    @*<EditForm Model="namesdata" OnValidSubmit="HandleForm">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+<label for="name">Name</label>
+<input type="text" @bind-value="namesdata.City" />
+<button type="submit" class="btn btn-primary">Add Form</button>
+</EditForm>*@
+ <button type="button" class="btn btn-primary" @onclick="AddForm">Add Form</button>
+<EditForm Model="namesdata" OnValidSubmit="HandleForm">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+<table class="table table-bordered">
+     
+    <thead>
+        <tr>
+             <th>User Name</th>
+                <th>City Name</th>
+                <th>State Name</th>
+                <th>Pin Code</th>
+                <th>Remove</th>
+        </tr>
+    </thead>
+    <tbody>
+      
+        @foreach (var item in NameTables )
+           {
+               <tr>
+  
+                   <td>
+                   <input type="text" value="@item.UserName" />
+                    </td>
+                    <td>
+                        <input type="text" value="@item.City" />
+                    </td>
+                    <td>
+                        <input type="text" value="@item.State" />
+                    </td>
+                    <td>
+                        <input type="text" value="@item.Pincode" />
+                    </td>
+                    
+                  @* <td>
+                   <input type="text" @bind-value="namesdata.UserName" />
+                    </td>
+                    <td>
+                        <input type="text" @bind-value="namesdata.City" />
+                    </td>
+                    <td>
+                        <input type="text" @bind-value="namesdata.State" />
+                    </td>
+                    <td>
+                        <input type="text" @bind-value="namesdata.Pincode" />
+                    </td>*@
+               </tr>
+           } 
+          
+    </tbody>
+</table>
+ <button type="submit" class="btn btn-primary">Submit Form</button>
+           </EditForm>
+</div>
+
+
+
+@code {
+    private List<NameTable> NameTables = new List<NameTable>();
+    private NameTable namesdata = new NameTable();
+    [Inject]
+    private IMultiTest? multiTestRepo { get; set; }
+    [Inject]
+    private NavigationManager Nvm { get; set; }
+
+    private void AddForm()
+    {
+        NameTables.Add(namesdata);
+       // namesdata = new NameTable();
+    }
+    private void HandleForm()
+    {
+         multiTestRepo?.AddAllTableValue(NameTables);
+          Nvm.NavigateTo("/");
+    }
+}
